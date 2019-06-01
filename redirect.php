@@ -2,9 +2,11 @@
 $hash =  "{$_SERVER['REQUEST_URI']}";
 try {
     $conn = new mysqli("0.0.0.0:3306", "demouser", "demopassword", "shortnerdb");
+    echo substr($hash,1,strlen($hash));
     $res = $conn->query("Select url from shorttable where hash ='".substr($hash,1,strlen($hash))."'");
-    $res->fetch_assoc();
-    header('Location: '.$res);
+    $res = $res->fetch_assoc();
+    //var_dump($res);
+    header('Location: '.$res['url']);
     mysqli_close($conn);
     exit();
 } catch (\Throwable $th) {
@@ -17,7 +19,7 @@ try {
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
+        <title>Error 404 - Dev-Lab</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="./style.css">
@@ -29,3 +31,5 @@ try {
 TEXT;
 }
 ?>
+
+

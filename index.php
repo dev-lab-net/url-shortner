@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
+        <title>Dev-Lab URL shortner</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="./style.css">
@@ -27,15 +27,18 @@ $conn = new mysqli("0.0.0.0:3306", "demouser", "demopassword", "shortnerdb");
 
 // Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Error BDD");
 }
+
 $regex_url = '(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})';
 echo "\n <br>";
 if ($_POST['shortme']){
         if ($url = trim($_POST['url'])) {
+		if(substr($url,0,7)!="http://" &&  substr($url,0,8)!="https://"){
+			$url = "http://".$url;
+		}
             if(preg_match($regex_url,$url)){
-                $tochange = array( "https://www.","https://", "http://www.", "http://");
-                $url=str_replace($tochange,'www.',$url);
+
                 $res = $conn->query("Select hash from shorttable where url ='".$url."'");
                 $res = $res->fetch_assoc();
                 if ($res){
@@ -57,7 +60,7 @@ if ($_POST['shortme']){
                 }
             }
             else {
-                echo 'Entrez une URL au format "http://(www).exemple.com" ou "https://(www).exemple.com" ou "www.exemple.com"';
+                echo 'Entrez une URL au format "http://(www).exemple.com" ou "https://(www).exemple.com"';
             }
         }
         else {
